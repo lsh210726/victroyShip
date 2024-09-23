@@ -5,14 +5,14 @@
 [![팜라이프 채팅 이미지](https://github.com/lsh210726/victroyShip/blob/main/8RsrgYo98IE%2000-03-24%20%282%29%20%EC%9A%B0%EC%8A%B9%ED%98%B8%20%ED%8C%9C%EB%9D%BC%EC%9D%B4%ED%94%84%ED%94%8C%EB%A0%88%EC%9D%B4%EC%98%81%EC%83%81.png)](https://youtu.be/8RsrgYo98IE?si=YPuazwJks8IeqZYP&t=174)
 https://youtu.be/8RsrgYo98IE?si=YPuazwJks8IeqZYP&t=174
 
-개발인원 : AI 1, 클라이언트 3, 레벨디자인 1
-
-개발기간 : 24/5/8 ~ 24/6/25 (7주)
+개발인원 : AI 1, 클라이언트 3, 레벨디자인 1  
+개발기간 : 24/5/8 ~ 24/6/25 (7주)  
+2024 메타버스 엑스포 전시
 
 ---
 ### 개발한 것
-팀장을 맡아 프로젝트를 기획하고 총괄하였습니다.
-언리얼 엔진과 LLM 챗봇을 접목시켜 실시간 NPC 대화를 구현하였습니다.
+팀장을 맡아 프로젝트를 기획하고 총괄하였습니다.  
+언리얼 엔진과 LLM 챗봇을 접목시켜 실시간 NPC 대화를 구현하였습니다.  
  1. 언리얼-파이썬 인터페이스 개발
  2. 캐릭터 챗봇 구현
  3. 챗봇 메모리 구현
@@ -59,10 +59,9 @@ def  talk2npc(npcName:str,dialog:str,preperence:int):#이름, 대화문, 현재 
 MessagesPlaceholder을 사용하면 자동으로 입출력이 저장되지만 이번 프로젝트에서는 챗봇 출력이 메세지 외 감정이나 호감도 등의 값이 같이 출력되므로 ChatMessageHistory를 통해 메세지 값만 세션에 저장시킵니다.
 
 ## PydanticOuputParser을 이용한 출력 고정
-챗봇의 응답을 엔진이 이해 가능한 형식으로 정형화 하기 위해 PydanticOuputParser을 사용했습니다.
-단순한 문자열 응답이 아닌 답변과 감정, 호감도 변화를 같이 출력시킵니다.
-생성된 감정에 따라 게임 캐릭터의 이미지와 애니메이션이 변경됩니다.
-생성된 호감도 변화치에 따라 캐릭터의 현재 유저에 대한 호감도가 변경됩니다. 
+챗봇의 응답을 엔진이 이해 가능한 형식으로 정형화 하기 위해 PydanticOuputParser을 사용했습니다.  
+
+
 ```
 # pydantic 모델 설정 - 출력양식
 
@@ -82,6 +81,9 @@ parser  =  PydanticOutputParser(pydantic_object=GameRequest)# parser 설정
 
 prompt  =  prompt.partial(format=parser.get_format_instructions())# 프롬프트 설정
 ```
+단순한 문자열 응답이 아닌 답변과 감정, 호감도 변화를 같이 출력시킵니다.  
+생성된 감정에 따라 게임 캐릭터의 이미지와 애니메이션이 변경됩니다.  
+생성된 호감도 변화치에 따라 캐릭터의 현재 유저에 대한 호감도가 변경됩니다. 
 ## 프롬프트 템플릿
 사용자의 대화내용과 캐릭터의 페르소나 및 호감도에 따른 말투, 출력포맷 등을 같이 전달합니다.
 ```template  =  """
