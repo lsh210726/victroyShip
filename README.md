@@ -7,6 +7,7 @@ https://youtu.be/8RsrgYo98IE?si=YPuazwJks8IeqZYP&t=174
 
 개발인원 : AI 1, 클라이언트 3, 레벨디자인 1  
 개발기간 : 24/5/8 ~ 24/6/25 (7주)  
+
 2024 메타버스 엑스포 전시
 
 ---
@@ -31,7 +32,7 @@ https://youtu.be/8RsrgYo98IE?si=YPuazwJks8IeqZYP&t=174
 ![챗봇 아키텍처](https://github.com/lsh210726/victroyShip/blob/main/farmlifeAI%20(1).jpg?raw=true)
 ## 메모리-세션
 npc이름을 매개변수로 세션을 검색합니다. 만약 세션이 없는 경우 새로 생성합니다.
-```
+```python
 session_store  = {} # 메시지 기록(세션)을 저장할 딕셔너리
 
   
@@ -62,7 +63,7 @@ MessagesPlaceholder을 사용하면 자동으로 입출력이 저장되지만 �
 챗봇의 응답을 엔진이 이해 가능한 형식으로 정형화 하기 위해 PydanticOuputParser을 사용했습니다.  
 
 
-```
+```python
 # pydantic 모델 설정 - 출력양식
 
 class  GameRequest(LangChainBaseModel):
@@ -86,7 +87,8 @@ prompt  =  prompt.partial(format=parser.get_format_instructions())# 프롬프트
 생성된 호감도 변화치에 따라 캐릭터의 현재 유저에 대한 호감도가 변경됩니다. 
 ## 프롬프트 템플릿
 사용자의 대화내용과 캐릭터의 페르소나 및 호감도에 따른 말투, 출력포맷 등을 같이 전달합니다.
-```template  =  """
+```python
+template  =  """
 
 You are a person with feelings. Understand your persona, {persona}, and respond to a given request in a conversational style of no more than 200 characters in Korean, based on previous dialogue history and example dialogue. {dialogue_example}
 
@@ -109,7 +111,7 @@ prompt  =  PromptTemplate.from_template(template=template)
 
 ## 호감도에 따른 말투 변경
 사용자와 npc 간의 호감도에 따라 대화 예시문이 변경됩니다. 플레이어는 npc의 응답이 호감도에 따라 변하면서 더 다양한 경험이 가능합니다.
-```
+```python
 "호감도 낮은 경우 (낯선 사람 또는 처음 만난 사람)": [
 
 	"안녕하세요, 김준서입니다. 여기 오신 건 처음이신가요?",
@@ -128,7 +130,7 @@ prompt  =  PromptTemplate.from_template(template=template)
 
 	"너한테만 보여주는 건데, 이번에 찍은 새 사진 중에 정말 멋진 거 있어. 같이 보자.",
 ```
-```
+```python
 def  set_preference(intPref:int):
 
 	if  intPref  >  70:
