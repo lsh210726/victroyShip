@@ -31,7 +31,13 @@ https://youtu.be/8RsrgYo98IE?si=YPuazwJks8IeqZYP&t=174
 ## 챗봇 아키텍처
 ![챗봇 아키텍처](https://github.com/lsh210726/victroyShip/blob/main/farmlifeAI%20(1).jpg?raw=true)
 ## 메모리-세션
-npc이름을 매개변수로 세션을 검색합니다. 만약 세션이 없는 경우 새로 생성합니다.
+npc이름을 매개변수로 세션을 검색합니다. 만약 세션이 없는 경우 새로 생성합니다.  
+
+MessagesPlaceholder을 사용하면 자동으로 입출력이 저장되지만 이번 프로젝트에서는 챗봇 출력이 메세지 외 감정이나 호감도 등의 값이 같이 출력되므로 ChatMessageHistory를 통해 메세지 값만 세션에 저장시킵니다.
+<details>
+<summary>코드</summary>
+
+ 
 ```python
 session_store  = {} # 메시지 기록(세션)을 저장할 딕셔너리
 
@@ -57,11 +63,14 @@ def  talk2npc(npcName:str,dialog:str,preperence:int):#이름, 대화문, 현재 
 
 	getChatLog(npcName).add_ai_message(response.answer)#결과 중 대답 부분만 로그에 저장
 ```
-MessagesPlaceholder을 사용하면 자동으로 입출력이 저장되지만 이번 프로젝트에서는 챗봇 출력이 메세지 외 감정이나 호감도 등의 값이 같이 출력되므로 ChatMessageHistory를 통해 메세지 값만 세션에 저장시킵니다.
+
+</details>
+
 
 ## PydanticOuputParser을 이용한 출력 고정
 챗봇의 응답을 엔진이 이해 가능한 형식으로 정형화 하기 위해 PydanticOuputParser을 사용했습니다.  
-
+<details>
+<summary>코드</summary>
 
 ```python
 # pydantic 모델 설정 - 출력양식
@@ -82,11 +91,18 @@ parser  =  PydanticOutputParser(pydantic_object=GameRequest)# parser 설정
 
 prompt  =  prompt.partial(format=parser.get_format_instructions())# 프롬프트 설정
 ```
+</details>
+
+
 단순한 문자열 응답이 아닌 답변과 감정, 호감도 변화를 같이 출력시킵니다.  
 생성된 감정에 따라 게임 캐릭터의 이미지와 애니메이션이 변경됩니다.  
 생성된 호감도 변화치에 따라 캐릭터의 현재 유저에 대한 호감도가 변경됩니다. 
 ## 프롬프트 템플릿
 사용자의 대화내용과 캐릭터의 페르소나 및 호감도에 따른 말투, 출력포맷 등을 같이 전달합니다.
+<details>
+<summary>코드</summary>
+
+ 
 ```python
 template  =  """
 
@@ -108,9 +124,15 @@ FORMAT:
 
 prompt  =  PromptTemplate.from_template(template=template)
 ```
+</details>
+
 
 ## 호감도에 따른 말투 변경
 사용자와 npc 간의 호감도에 따라 대화 예시문이 변경됩니다. 플레이어는 npc의 응답이 호감도에 따라 변하면서 더 다양한 경험이 가능합니다.
+<details>
+<summary>코드</summary>
+
+ 
 ```python
 "호감도 낮은 경우 (낯선 사람 또는 처음 만난 사람)": [
 
@@ -145,6 +167,8 @@ def  set_preference(intPref:int):
 
 		return  "호감도 낮은 경우 (낯선 사람 또는 처음 만난 사람)"
 ```
+</details>
+
 
 ## 회고
 첫 llm 프로젝트였기 때문에 학습과 병행하면서 개발을 진행하다 보니 시행착오가 많았습니다.  
