@@ -100,7 +100,7 @@ def  talk2npc(npcName:str,dialog:str,preperence:int):#이름, 대화문, 현재 
 ## PydanticOuputParser을 이용한 출력 고정
 챗봇에게서 단순 응답만 생성하는 것이 아닌, 대화 내용에 따라 변하는 NPC의 감정도 함께 생성시켜 더 사실적인 NPC를 구현했습니다.  
 
-<img src="https://github.com/lsh210726/victroyShip/blob/main/chatPrompt1.jpg" alt="chatPromptImg" style="width: 30%;">  
+<img src="https://github.com/lsh210726/victroyShip/blob/main/chatPrompt1.jpg" alt="chatPromptImg" style="width: 40%;">  
 
 출력들 중 필요한 데이터만 추출해야 하기에 챗봇의 출력을 PydanticOuputParser을 사용하여 정형화하였습니다.
 <details>
