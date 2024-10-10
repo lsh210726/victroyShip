@@ -39,12 +39,26 @@ API 챗봇은 기본적으로 기억을 하지 않기 때문에 이전 대화 �
 
 
    ```mermaid
-   flowchart LR
-       A[시작] --> B{NPC 이름으로 세션 검색}
-       B -->|세션 없음| C[새 세션 생성]
-       B -->|세션 있음| D[기존 세션의 대화 기록을 프롬프트에 삽입]
-       C --> E[대화 시작]
-       D --> E
+flowchart LR
+    A["<b>시작</b>"] --> B{"<b>NPC 이름으로<br/>세션 검색</b>"}
+    B -->|"<b>세션 없음</b>"| C["<b>새 세션 생성</b>"]
+    B -->|"<b>세션 있음</b>"| D["<b>기존 세션의<br/>대화 기록을<br/>프롬프트에 삽입</b>"]
+    C --> E["<b>대화 시작</b>"]
+    D --> E
+    E --> F["<b>대화 진행</b>"]
+    F --> G["<b>세션 업데이트</b>"]
+    G --> H["<b>종료</b>"]
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px,color:black,font-size:14px;
+    classDef process fill:#d4f1f4,stroke:#05a8aa,stroke-width:2px,color:black,font-size:14px;
+    classDef decision fill:#ffe6ab,stroke:#ffa62b,stroke-width:2px,color:black,font-size:14px;
+    classDef start_end fill:#ffb3ba,stroke:#a83e32,stroke-width:2px,color:black,font-size:14px;
+    
+    class A,H start_end;
+    class B decision;
+    class C,D,E,F,G process;
+    
+    linkStyle default stroke:#2b59c3,stroke-width:2px;
    ```
 
 
@@ -84,7 +98,9 @@ def  talk2npc(npcName:str,dialog:str,preperence:int):#이름, 대화문, 현재 
 
 
 ## PydanticOuputParser을 이용한 출력 고정
-챗봇에게서 단순 대화문만 출력하는 것이 아닌, 대화 내용에 따라 변하는 NPC의 감정도 함께 출력시켜 더 사실적인 NPC를 구현했습니다.
+챗봇에게서 단순 응답만 생성하는 것이 아닌, 대화 내용에 따라 변하는 NPC의 감정도 함께 생성시켜 더 사실적인 NPC를 구현했습니다.  
+
+<img src="https://github.com/lsh210726/victroyShip/blob/main/chatPrompt1.jpg" alt="chatPromptImg" style="width: 30%;">  
 
 출력들 중 필요한 데이터만 추출해야 하기에 챗봇의 출력을 PydanticOuputParser을 사용하여 정형화하였습니다.
 <details>
@@ -112,32 +128,37 @@ prompt  =  prompt.partial(format=parser.get_format_instructions())# 프롬프트
 </details>
 
 
-단순한 문자열 응답이 아닌 답변과 감정, 호감도 변화를 같이 출력시킵니다.  
+단순한 응답이 아닌 응답과 감정, 호감도 변화를 같이 출력시킵니다.  
 생성된 감정에 따라 게임 캐릭터의 이미지와 애니메이션이 변경됩니다.  
 생성된 호감도 변화치에 따라 캐릭터의 현재 유저에 대한 호감도가 변경됩니다. 
+
+
+<div style="display: flex; justify-content: center;">
+    <img src="https://github.com/lsh210726/victroyShip/blob/main/8RsrgYo98IE%2000-03-23%20(2)%20farmlifeSurp.png" alt="Image 1" style="width: 45%; margin-right: 10px;">
+    <img src="https://github.com/lsh210726/victroyShip/blob/main/8RsrgYo98IE%2000-03-54%20(2)%20farmlifeSmile.png" alt="Image 2" style="width: 45%;">
+</div>
+
 ## 프롬프트 템플릿
-사용자의 대화내용과 캐릭터의 페르소나 및 호감도에 따른 말투, 출력포맷 등을 같이 전달합니다.
+챗봇에 대화 요청 시 자연스러운 대화 생성을 위해 대화문 요청 프롬프트에 사용자의 대화문과 함께 NPC의 페르소나, 현재 사용자와의 호감도에 맞는 대화 예시문, 출력 포맷 등을 포함하여 전달합니다.
+
+
+<img src="https://github.com/lsh210726/victroyShip/blob/main/chatPrompt.jpg" alt="chatPromptImg" style="width: 30%;">
+
+
 <details>
 <summary>코드</summary>
 
  
 ```python
+#프롬프트 내용 : 당신은 감정을 가진 사람입니다. 당신의 페르소나 {persona}을 이해하고, 이전 대화 기록과 예시 대화를 바탕으로 주어진 요청에 한국어로 200자 이내의 대화 스타일로 응답하세요. {dialogue_example}
 template  =  """
-
 You are a person with feelings. Understand your persona, {persona}, and respond to a given request in a conversational style of no more than 200 characters in Korean, based on previous dialogue history and example dialogue. {dialogue_example}
 
-  
-
 request:
-
 {request_content}
 
-  
-
 FORMAT:
-
 {format}
-
 """
 
 prompt  =  PromptTemplate.from_template(template=template)
@@ -146,7 +167,8 @@ prompt  =  PromptTemplate.from_template(template=template)
 
 
 ## 호감도에 따른 말투 변경
-사용자와 npc 간의 호감도에 따라 대화 예시문이 변경됩니다. 플레이어는 npc의 응답이 호감도에 따라 변하면서 더 다양한 경험이 가능합니다.
+사용자와 npc 간의 호감도에 따라 대화 예시문이 변경됩니다. 
+npc와 플레이어 간의 호감도가 올라갈수록 더 친밀한 말투를 사용하도록 하여 몰입감 있는 대화가 가능합니다.
 <details>
 <summary>코드</summary>
 
