@@ -12,8 +12,9 @@ https://youtu.be/8RsrgYo98IE?si=YPuazwJks8IeqZYP&t=174
 
 ---
 ### 개발한 것
-팀장을 맡아 프로젝트를 기획하고 총괄하였습니다.  
 언리얼 엔진과 LLM 챗봇을 접목시켜 실시간 NPC 대화를 구현하였습니다.  
+
+언리얼 클라이언트와 파이썬 챗봇 간의 정보 전달 기능과 NPC 롤플레잉 챗봇을 만들었습니다.
  1. 언리얼-파이썬 인터페이스 개발
  2. 캐릭터 챗봇 구현
  3. 챗봇 메모리 구현
@@ -31,11 +32,26 @@ https://youtu.be/8RsrgYo98IE?si=YPuazwJks8IeqZYP&t=174
 ## 챗봇 아키텍처
 ![챗봇 아키텍처](https://github.com/lsh210726/victroyShip/blob/main/farmlifeAI%20(1).jpg?raw=true)
 ## 메모리-세션
-npc이름을 매개변수로 세션을 검색합니다. 만약 세션이 없는 경우 새로 생성합니다.  
+API 챗봇은 기본적으로 기억을 하지 않기 때문에 이전 대화 내용을 저장해주기 위해 각 npc별로 세션을 만들었습니다.
 
-MessagesPlaceholder을 사용하면 자동으로 입출력이 저장되지만 이번 프로젝트에서는 챗봇 출력이 메세지 외 감정이나 호감도 등의 값이 같이 출력되므로 ChatMessageHistory를 통해 메세지 값만 세션에 저장시킵니다.
+
+대화를 나누는 npc이름을 매개변수로 세션을 검색합니다. 만약 세션이 없는 경우 새로 생성합니다.  
+
+
+   ```mermaid
+   flowchart LR
+       A[시작] --> B{NPC 이름으로 세션 검색}
+       B -->|세션 없음| C[새 세션 생성]
+       B -->|세션 있음| D[기존 세션의 대화 기록을 프롬프트에 삽입]
+       C --> E[대화 시작]
+       D --> E
+   ```
+
+
+MessagesPlaceholder을 사용하면 자동으로 입출력이 저장되지만 이번 프로젝트에서는 챗봇 출력이 대화문 외 감정이나 호감도 등의 값이 같이 출력되므로 ChatMessageHistory를 통해 대화문 내용만 세션에 저장시킵니다.
+
 <details>
-<summary>코드</summary>
+<summary>코드</summary> 
 
  
 ```python
@@ -68,7 +84,9 @@ def  talk2npc(npcName:str,dialog:str,preperence:int):#이름, 대화문, 현재 
 
 
 ## PydanticOuputParser을 이용한 출력 고정
-챗봇의 응답을 엔진이 이해 가능한 형식으로 정형화 하기 위해 PydanticOuputParser을 사용했습니다.  
+챗봇에게서 단순 대화문만 출력하는 것이 아닌, 대화 내용에 따라 변하는 NPC의 감정도 함께 출력시켜 더 사실적인 NPC를 구현했습니다.
+
+출력들 중 필요한 데이터만 추출해야 하기에 챗봇의 출력을 PydanticOuputParser을 사용하여 정형화하였습니다.
 <details>
 <summary>코드</summary>
 
