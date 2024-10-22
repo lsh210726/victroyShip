@@ -37,28 +37,8 @@ API 챗봇은 기본적으로 기억을 하지 않기 때문에 이전 대화 �
 
 대화를 나누는 npc이름을 매개변수로 세션을 검색합니다. 만약 세션이 없는 경우 새로 생성합니다.  
 
+![다이어그램](https://github.com/lsh210726/victroyShip/blob/main/readmeImg/mermaid-diagram-2024-10-22-180626.png)
 
-   ```mermaid
-flowchart LR
-    A["<b>시작</b>"] --> B{"<b>NPC 이름으로<br/>세션 검색</b>"}
-    B -->|"<b>세션 없음</b>"| C["<b>새 세션 생성</b>"]
-    B -->|"<b>세션 있음</b>"| D["<b>기존 세션의<br/>대화 기록을<br/>프롬프트에 삽입</b>"]
-    C --> E["<b>대화 진행</b>"]
-    D --> E
-    E --> G["<b>세션 업데이트</b>"]
-    G --> H["<b>종료</b>"]
-
-    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px,color:black,font-size:14px;
-    classDef process fill:#d4f1f4,stroke:#05a8aa,stroke-width:2px,color:black,font-size:14px;
-    classDef decision fill:#ffe6ab,stroke:#ffa62b,stroke-width:2px,color:black,font-size:14px;
-    classDef start_end fill:#ffb3ba,stroke:#a83e32,stroke-width:2px,color:black,font-size:14px;
-    
-    class A,H start_end;
-    class B decision;
-    class C,D,E,F,G process;
-    
-    linkStyle default stroke:#2b59c3,stroke-width:2px;
-   ```
 
 
 MessagesPlaceholder을 사용하면 자동으로 입출력이 저장되지만 이번 프로젝트에서는 챗봇 출력이 대화문 외 감정이나 호감도 등의 값이 같이 출력되므로 ChatMessageHistory를 통해 대화문 내용만 세션에 저장시킵니다.
